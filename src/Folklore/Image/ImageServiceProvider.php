@@ -1,4 +1,5 @@
-<?php namespace Folklore\Image;
+<?php
+namespace Folklore\Image;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -30,7 +31,7 @@ class ImageServiceProvider extends ServiceProvider
         $this->publishes([
             $configFile => config_path('image.php')
         ], 'config');
-        
+
         $this->publishes([
             $publicFile => public_path('vendor/folklore/image')
         ], 'public');
@@ -38,8 +39,8 @@ class ImageServiceProvider extends ServiceProvider
         $app = $this->app;
         $router = $app['router'];
         $config = $app['config'];
-        
-        $pattern = $app['image']->pattern();
+
+        $pattern = $app['fimage']->pattern();
         $proxyPattern = $config->get('image.proxy_route_pattern');
         $router->pattern('image_pattern', $pattern);
         $router->pattern('image_proxy_pattern', $proxyPattern ? $proxyPattern:$pattern);
@@ -55,7 +56,7 @@ class ImageServiceProvider extends ServiceProvider
                 'uses' => 'Folklore\Image\ImageController@serve'
             ));
         }
-        
+
         //Proxy
         $proxy = $this->app['config']['image.proxy'];
         if ($proxy) {
@@ -75,7 +76,7 @@ class ImageServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('image', function ($app) {
+        $this->app->singleton('fimage', function ($app) {
             return new ImageManager($app);
         });
     }
@@ -87,6 +88,6 @@ class ImageServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('image');
+        return array('fimage');
     }
 }
